@@ -243,11 +243,18 @@ const WebsiteSettingsContent = () => {
       : {};
 
     try {
-      // Upload directly to the Next.js server to ensure images are saved in the frontend's public/images directory
-      let response = await fetch(`/local-api/upload`, {
+      let response = await fetch(`${API_URL}/admin/settings/upload`, {
         method: "POST",
+        headers,
         body: formData,
       });
+      if (!response.ok) {
+        response = await fetch(`${API_URL}/settings/upload`, {
+          method: "POST",
+          headers,
+          body: formData,
+        });
+      }
       if (response.ok) {
         const resData = await response.json();
         const uploadedUrl =

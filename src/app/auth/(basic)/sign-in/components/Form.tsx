@@ -19,8 +19,8 @@ import toast from "react-hot-toast";
 const LoginForm = () => {
   const { login, loading } = useAuth();
 
-  const [identifier, setIdentifier] = useState("admin@gmail.com");
-  const [password, setPassword] = useState("12345");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
@@ -70,7 +70,14 @@ const LoginForm = () => {
       <div className="mb-3">
         <div className="d-flex justify-content-between align-items-center mb-1">
           <FormLabel className="mb-0">
-            Email ID<span className="text-danger">*</span>
+            {idType === "email"
+              ? "Email Address"
+              : idType === "mobile"
+                ? "Mobile Number"
+                : idType === "text" && identifier
+                  ? "Username / ID"
+                  : "Username, Email or Mobile"}
+            <span className="text-danger">*</span>
           </FormLabel>
           {idType && (
             <Badge
@@ -115,7 +122,7 @@ const LoginForm = () => {
           </InputGroup.Text>
           <FormControl
             type="text"
-            placeholder="admin@gmail.com"
+            placeholder="Username, Email or Mobile"
             value={identifier}
             required
             onChange={(e: ChangeEvent<HTMLInputElement>) =>

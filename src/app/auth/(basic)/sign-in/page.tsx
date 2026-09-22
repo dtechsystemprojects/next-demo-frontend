@@ -30,7 +30,7 @@ const Page = () => {
                 <div className="auth-brand text-center mb-4">
                   <AuthLogo />
                   <p className="text-muted w-lg-75 mt-3 mx-auto">
-                    Let’s get you signed in. Enter your email ID to continue with Password.
+                    Let’s get you signed in. Enter your Username, Email, or Mobile to continue with Password.
                   </p>
                 </div>
 

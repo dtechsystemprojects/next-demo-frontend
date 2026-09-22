@@ -1,13 +1,13 @@
 export const META_DATA = {
-  name: "AISGWB",
-  title: "AISGWB",
-  email: "isgwbc@gmail.com",
-  description: "All India Society of Gastroenterology, West Bengal",
+  name: "DEMO",
+  title: "DEMO",
+  email: "demo@gmail.com",
+  description: "DEMO",
   author: "DTech System",
   username: "",
-  keywords: "AISGWB",
+  keywords: "DEMO",
   version: "1.0.0",
-  buyUrl: "https://aisgwb.org/",
+  buyUrl: "https://dtechsystem.co.in/",
 };
 
 export const currentYear = new Date().getFullYear();

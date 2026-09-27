@@ -3,14 +3,6 @@ import path from 'path'
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  async rewrites() {
-    return [
-      {
-        source: '/api-proxy/:path*',
-        destination: 'https://api.dtechsystem.co.in/api/:path*',
-      },
-    ]
-  },
   images: {
     unoptimized: true,
     remotePatterns: [

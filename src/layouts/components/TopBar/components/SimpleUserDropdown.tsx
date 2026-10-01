@@ -36,16 +36,30 @@ const UserDropdown = () => {
     });
   };
 
+  const getImageSrc = (url?: string | null) => {
+    if (!url) return User1;
+    if (
+      url.startsWith("blob:") ||
+      url.startsWith("http://") ||
+      url.startsWith("https://") ||
+      url.startsWith("/")
+    ) {
+      return url;
+    }
+    return `/uploads/${url}`;
+  };
+
   return (
     <div id="simple-user-dropdown" className="topbar-item nav-user">
       <Dropdown>
         <DropdownToggle className="topbar-link drop-arrow-none" type="button">
           <Image
-            src={User1}
+            src={getImageSrc(user?.avatar)}
             width={32}
             height={32}
             className="rounded-circle me-lg-2 d-flex object-fit-cover"
             alt="user-image"
+            unoptimized
           />
           <div className="d-lg-flex align-items-center gap-2 d-none">
             <div className="text-start">

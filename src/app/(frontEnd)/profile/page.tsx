@@ -4,26 +4,21 @@ import React, { useState, useEffect } from "react";
 import { Icon as IconifyIcon } from "@iconify/react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
-import { fetchFrontendBookings } from "@/redux/slices/frontEnd/bookingSlice";
 import toast from "react-hot-toast";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
 import Account from "./components/Account";
-import Membership from "./components/Membership";
-import Booking from "./components/Booking";
-import Transactions from "./components/Transactions";
 import ProfileHead from "./components/ProfileHead";
 
 const MyAccountPage = () => {
   const [activeTab, setActiveTab] = useState<"account" | "membership" | "bookings" | "transactions">("account");
 
-  const { bookings } = useSelector((state: RootState) => state.frontendBooking);
   const { user } = useSelector((state: RootState) => state.frontendUser);
   const hasMembership = !!user?.memberId;
   const dispatch = useDispatch<AppDispatch>();
   
   useEffect(() => {
-    dispatch(fetchFrontendBookings());
+    dispatch(() => {});
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("payment_success") === "true") {
@@ -77,7 +72,7 @@ const MyAccountPage = () => {
                 onClick={() => setActiveTab("bookings")}
               >
                 <IconifyIcon icon="lucide:shopping-bag" />
-                <span>Bookings ({bookings?.length || 0})</span>
+                <span>Bookings</span>
               </button>
             </li>
             <li className="nav-item flex-fill">
@@ -94,9 +89,9 @@ const MyAccountPage = () => {
 
         {/* Render Active Component */}
         {activeTab === "account" && <Account />}
-        {activeTab === "membership" && hasMembership && <Membership />}
-        {activeTab === "bookings" && <Booking />}
-        {activeTab === "transactions" && <Transactions />}
+        {activeTab === "membership"}
+        {activeTab === "bookings"}
+        {activeTab === "transactions"}
       </main>
 
       <Footer />

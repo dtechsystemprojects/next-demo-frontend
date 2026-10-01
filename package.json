@@ -1,14 +1,16 @@
 {
   "name": "dtech",
-  "version": "8.0.0",
-  "description": "D-Tech is a modern, responsive admin dashboard. Ideal for building CRM, CMS, project management tools, and custom web applications with a clean UI, flexible layouts, and rich features.",
-  "author": "D-Tech",
+  "version": "1.0.0",
+  "description": "DTech is a modern, responsive admin dashboard. Ideal for building CRM, CMS, project management tools, and custom web applications with a clean UI, flexible layouts, and rich features.",
+  "author": "DTech",
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier --write './src/**/*.{ts,tsx,js,jsx}'"
+    "format": "prettier --write './src/**/*.{ts,tsx,js,jsx}'",
+    "generate:admin": "node generate-admin.js",
+    "generate:frontend": "node generate-frontend.js"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",

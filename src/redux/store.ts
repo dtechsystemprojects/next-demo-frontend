@@ -5,33 +5,25 @@ import permissionReducer from "@/redux/slices/admin/permissionSlice";
 import groupAccessReducer from "@/redux/slices/admin/groupAccessSlice";
 import userReducer from "./slices/admin/userSlice";
 import activityReducer from "./slices/admin/activitySlice";
-import ticketReducer from "./slices/admin/ticketSlice";
 import emailTemplateReducer from "./slices/admin/emailTemplateSlice";
 import smsTemplateReducer from "./slices/admin/smsTemplateSlice";
-import frontendEventReducer from "./slices/frontEnd/eventSlice";
 import frontendUserReducer from "./slices/frontEnd/userSlice";
-import frontendCheckoutReducer from "./slices/frontEnd/checkoutSlice";
-import frontendBookingReducer from "./slices/frontEnd/bookingSlice";
-import frontendTransactionReducer from "./slices/frontEnd/transactionSlice";
-import frontendMembershipReducer from "./slices/frontEnd/membershipSlice";
+import pageReducer from "./slices/admin/pageSlice";
+import widgetReducer from "./slices/admin/widgetSlice";
 
 export const store = configureStore({
   reducer: {
+    widget: widgetReducer,
+    page: pageReducer,
     auth: authReducer,
     groups: groupReducer,
     permissions: permissionReducer,
     groupAccess: groupAccessReducer,
     users: userReducer,
     activities: activityReducer,
-    tickets: ticketReducer,
     emailTemplates: emailTemplateReducer,
     smsTemplates: smsTemplateReducer,
-    frontendEvents: frontendEventReducer,
     frontendUser: frontendUserReducer,
-    frontendCheckout: frontendCheckoutReducer,
-    frontendBooking: frontendBookingReducer,
-    frontendTransaction: frontendTransactionReducer,
-    frontendMembership: frontendMembershipReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });

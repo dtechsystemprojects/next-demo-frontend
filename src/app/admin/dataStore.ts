@@ -15,6 +15,24 @@
   username?: string;
 }
 
+export interface PageRecord {
+  id?: string;
+  pageName:string
+  slug:string
+  content:string
+  metaTitle:string
+  metaDescription:string
+  metaKeywords:string
+  image:string
+  template:string
+  externalUrl:string
+  widgets:string[]
+  isActive:boolean
+  isDeleted:boolean
+  createdAt:string
+  updatedAt:string
+}
+
 export interface EventRecord {
   id?: string;
   _id?: string;

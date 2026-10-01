@@ -39,9 +39,11 @@ export const fetchUsers = createAsyncThunk<
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
-    if (!res.ok) throw new Error("Failed to fetch users");
-    const json = await res.json();
-    if (json.success && json.data) {
+    const json = await res.json().catch(() => null);
+    if (!res.ok) {
+      return rejectWithValue(json?.message || "Failed to fetch users");
+    }
+    if (json && json.success && json.data) {
       return json.data;
     }
     return rejectWithValue("Invalid data received");

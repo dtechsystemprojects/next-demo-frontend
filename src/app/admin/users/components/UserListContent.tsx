@@ -494,7 +494,7 @@ const UserListContent: React.FC = () => {
                 value={table.getState().pagination.pageSize}
                 onChange={(e) => table.setPageSize(Number(e.target.value))}
               >
-                {[5, 8, 10, 15, 20].map((size) => (
+                {[10, 15, 20, 50].map((size) => (
                   <option key={size} value={size}>
                     {size}
                   </option>

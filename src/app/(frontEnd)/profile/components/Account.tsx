@@ -7,15 +7,13 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { fetchFrontendProfile, updateFrontendProfile, fetchFrontendGroups } from "@/redux/slices/frontEnd/userSlice";
 import { Modal, Button, Form } from "react-bootstrap";
 import Script from "next/script";
-import { fetchMembershipSettings, applyMembership, fetchMyMembership } from "@/redux/slices/frontEnd/membershipSlice";
-import { createCheckoutOrder } from "@/redux/slices/frontEnd/checkoutSlice";
 import { setting } from "@/context/useSettingsContext";
 import { toast } from "react-hot-toast";
 
 
 const Account = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user, groups, loading } = useSelector((state: RootState) => state.frontendUser);
+  const { user, loading } = useSelector((state: RootState) => state.frontendUser);
 
   // Profile Form State
   const anyUserInit = user as any;
@@ -56,115 +54,6 @@ const Account = () => {
   const [saveSuccessMsg, setSaveSuccessMsg] = useState<string | null>(null);
   const [saveErrorMsg, setSaveErrorMsg] = useState<string | null>(null);
   const [passwordSuccessMsg, setPasswordSuccessMsg] = useState<string | null>(null);
-
-  const { settings: membershipSettings, loading: membershipLoading, myMembership } = useSelector((state: RootState) => (state as any).frontendMembership || { settings: null, loading: false, myMembership: null });
-
-  useEffect(() => {
-    if (user && (user.id || user._id)) {
-      const userId = (user.id || user._id) as string;
-      dispatch(fetchMyMembership(userId));
-    }
-  }, [user, dispatch]);
-
-  const [showLifeMemberModal, setShowLifeMemberModal] = useState(false);
-  const [membershipForm, setMembershipForm] = useState({
-    centralMembershipId: ""
-  });
-  const [isApplying, setIsApplying] = useState(false);
-
-  useEffect(() => {
-    if (showLifeMemberModal && !membershipSettings) {
-      dispatch(fetchMembershipSettings());
-    }
-  }, [showLifeMemberModal, dispatch, membershipSettings]);
-
-  const handleApplyLifeMembership = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!membershipForm.centralMembershipId) {
-      toast.error("Central Membership ID is required");
-      return;
-    }
-
-    const amount = Number(setting('general.membership_amount', 5000));
-    
-    setIsApplying(true);
-    
-    try {
-      // const rzpKeyId = setting('general.razorpay_key_id', process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "");
-      // const rzpKeySecret = setting('general.razorpay_key_secret', process.env.NEXT_PUBLIC_RAZORPAY_KEY_SECRET || "");
-
-      
-      const rzpKeyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ??"";
-      const rzpKeySecret = process.env.NEXT_PUBLIC_RAZORPAY_KEY_SECRET??"";
-      
-      const orderData = await dispatch(createCheckoutOrder({
-          amount: amount,
-          key_id: rzpKeyId,
-          key_secret: rzpKeySecret
-      })).unwrap();
-
-      const options = {
-          key: orderData.key_id || rzpKeyId, 
-          amount: orderData.order.amount,
-          currency: orderData.order.currency,
-          order_id: orderData.order.id,
-          name: setting('general.site_name', 'AISGWB'),
-          description: 'Life Time Membership Fee',
-          prefill: {
-              name: profile.name,
-              email: profile.email,
-              contact: profile.mobile
-          },
-          handler: async function (response: any) {
-              try {
-                  const payload = {
-                      razorpay_payment_id: response.razorpay_payment_id,
-                      razorpay_order_id: response.razorpay_order_id,
-                      razorpay_signature: response.razorpay_signature,
-                      key_secret: rzpKeySecret,
-                      membershipData: {
-                        userId: user?.id || user?._id || null,
-                        groupId: user?.groupId || null,
-                        name: profile.name || "",
-                        email: profile.email || "",
-                        phone: profile.mobile || "",
-                        mobile: profile.mobile || "",
-                        gender: profile.sex || "",
-                        sex: profile.sex || "",
-                        centralMembershipId: membershipForm.centralMembershipId || "",
-                        amount: amount || 0
-                      },
-                      transactionData: {
-                        userId: user?.id || user?._id || null,
-                        eventId: null,
-                        description: 'Life Time Membership Fee',
-                        paymentMethod: 'Razorpay',
-                        amount: amount || 0
-                      }
-                  };
-
-                  await dispatch(applyMembership(payload)).unwrap();
-                  setShowLifeMemberModal(false);
-                  window.location.href = window.location.pathname + "?membership_success=true";
-              } catch (err: any) {
-                  const errorMsg = typeof err === 'string' ? err : (err?.message || "Payment verification failed");
-                  toast.error(errorMsg);
-              }
-          }
-      };
-
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', function (response: any) {
-          toast.error(response.error.description || "Payment failed");
-      });
-      rzp.open();
-      
-    } catch (error: any) {
-      toast.error(error.message || "Error initializing payment");
-    } finally {
-      setIsApplying(false);
-    }
-  };
 
 
   // Handlers
@@ -397,58 +286,7 @@ const Account = () => {
           </div> */}
 
           
-          {!user?.memberId && (!myMembership || myMembership.status === 'Rejected') && (
-            <div className="card border-0 bg-primary bg-opacity-10 text-primary p-4 rounded-3 mb-4">
-              <div className="d-flex align-items-start gap-3">
-                <IconifyIcon icon="lucide:award" width="28" className="flex-shrink-0 mt-1" />
-                <div>
-                  <h6 className="fw-bold mb-1">Life Time Membership</h6>
-                  <p className="small mb-3 text-secondary">
-                    Apply for a Life Time Membership to get exclusive benefits and access.
-                  </p>
-                  {myMembership && myMembership.status === 'Rejected' && (
-                    <div className="alert alert-danger p-2 small mb-3">
-                      Your previous application was rejected. You can apply again.
-                    </div>
-                  )}
-                  <button className="btn btn-primary btn-sm px-4" onClick={() => setShowLifeMemberModal(true)}>
-                    Active Life Member
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
 
-          {!user?.memberId && myMembership && myMembership.status !== 'Rejected' && myMembership.status !== 'Suspended' && (
-            <div className="card border-0 bg-warning bg-opacity-10 text-warning-emphasis p-4 rounded-3 mb-4">
-              <div className="d-flex align-items-start gap-3">
-                <IconifyIcon icon="lucide:clock" width="28" className="flex-shrink-0 mt-1 text-warning" />
-                <div>
-                  <h6 className="fw-bold mb-1">Membership Application Pending</h6>
-                  <p className="small mb-2 text-secondary">
-                    Your Life Time Membership application is currently under review by the administration. You will be notified once it is approved.
-                  </p>
-                  <p className="small mb-0 fw-semibold text-secondary">
-                    Your payment information has been sent to your email for confirmation.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {myMembership && myMembership.status === 'Suspended' && (
-            <div className="card border-0 bg-warning bg-opacity-10 text-warning-emphasis p-4 rounded-3 mb-4">
-              <div className="d-flex align-items-start gap-3">
-                <IconifyIcon icon="lucide:clock" width="28" className="flex-shrink-0 mt-1 text-warning" />
-                <div>
-                  <h6 className="fw-bold mb-1">Membership Suspended</h6>
-                  <p className="small mb-2 text-secondary">
-                    Your Life Time Membership is currently suspended. Please contact the administration for more information.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
           
           {!user?.memberId && (
           <div className="card border-0 bg-primary bg-opacity-10 text-primary p-4 rounded-3 mb-4">
@@ -466,52 +304,7 @@ const Account = () => {
         </div>
       </div>
     
-      <Modal show={showLifeMemberModal} onHide={() => setShowLifeMemberModal(false)} backdrop="static" keyboard={false} size="lg">
-        <Form onSubmit={handleApplyLifeMembership}>
-          <Modal.Header closeButton>
-            <Modal.Title>Apply for Life Time Membership</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <Form.Label>Name</Form.Label>
-                <Form.Control type="text" value={profile.name} readOnly disabled />
-              </div>
-              <div className="col-md-6">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" value={profile.email} readOnly disabled />
-              </div>
-              <div className="col-md-6">
-                <Form.Label>Phone</Form.Label>
-                <Form.Control type="text" value={profile.mobile} readOnly disabled />
-              </div>
-              <div className="col-md-6">
-                <Form.Label>Gender</Form.Label>
-                <Form.Control type="text" value={profile.sex} readOnly disabled />
-              </div>
-              <div className="col-md-6">
-                <Form.Label>Central Membership ID <span className="text-danger">*</span></Form.Label>
-                <Form.Control type="text" value={membershipForm.centralMembershipId} onChange={(e) => setMembershipForm({...membershipForm, centralMembershipId: e.target.value})} required />
-              </div>
 
-              <div className="col-md-12 mt-4">
-                <div className="alert alert-info">
-                  <strong>Membership Fee:</strong> INR {setting('general.membership_amount', '5000')}
-                </div>
-              </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowLifeMemberModal(false)}>
-              Cancel
-            </Button>
-            <Button variant="primary" type="submit" disabled={isApplying || membershipLoading}>
-              {isApplying ? 'Processing...' : 'Proceed to Payment'}
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
     </div>
 
   );

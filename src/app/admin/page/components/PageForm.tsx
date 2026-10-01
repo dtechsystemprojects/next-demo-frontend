@@ -386,7 +386,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                     <FormControl
                       type="text"
                       placeholder="e.g. About Us"
-                      value={formData.pageName}
+                      value={formData.pageName || ""}
                       onChange={(e) => handleChange("pageName", e.target.value)}
                       isInvalid={!!validationErrors.pageName}
                     />
@@ -403,7 +403,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                     <FormControl
                       type="text"
                       placeholder="e.g. about-us"
-                      value={formData.slug}
+                      value={formData.slug || ""}
                       onChange={(e) => handleChange("slug", e.target.value)}
                       isInvalid={!!validationErrors.slug}
                     />
@@ -419,7 +419,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                       Template <span className="text-danger">*</span>
                     </FormLabel>
                     <FormSelect
-                      value={formData.template}
+                      value={formData.template || ""}
                       onChange={(e) => handleChange("template", e.target.value)}
                       isInvalid={!!validationErrors.template}
                     >
@@ -483,7 +483,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                     <FormControl
                       type="url"
                       placeholder="https://external-site.com"
-                      value={formData.externalUrl}
+                      value={formData.externalUrl || ""}
                       onChange={(e) => handleChange("externalUrl", e.target.value)}
                       isInvalid={!!validationErrors.externalUrl}
                     />
@@ -502,7 +502,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                       type="switch"
                       id="status-switch-form"
                       label={formData.isActive ? "Active (Published)" : "Inactive (Draft)"}
-                      checked={formData.isActive}
+                      checked={formData.isActive ?? true}
                       onChange={(e) => handleChange("isActive", e.target.checked)}
                       className="fs-15 fw-semibold mt-1"
                     />
@@ -514,7 +514,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                     <div style={{ height: "300px", marginBottom: "40px" }} className={validationErrors.content ? "is-invalid-quill" : ""}>
                       <ReactQuill
                         theme="snow"
-                        value={formData.content}
+                        value={formData.content || ""}
                         onChange={(val) => handleChange("content", val)}
                         style={{ height: "100%" }}
                         className={validationErrors.content ? "border border-danger" : ""}
@@ -553,7 +553,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                     <FormControl
                       type="text"
                       placeholder="SEO Title"
-                      value={formData.metaTitle}
+                      value={formData.metaTitle || ""}
                       onChange={(e) => handleChange("metaTitle", e.target.value)}
                       isInvalid={!!validationErrors.metaTitle}
                     />
@@ -567,7 +567,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                     <FormControl
                       type="text"
                       placeholder="keyword1, keyword2, keyword3"
-                      value={formData.metaKeywords}
+                      value={formData.metaKeywords || ""}
                       onChange={(e) => handleChange("metaKeywords", e.target.value)}
                       isInvalid={!!validationErrors.metaKeywords}
                     />
@@ -582,7 +582,7 @@ const PageForm: React.FC<PageFormProps> = ({ mode, pageId }) => {
                       as="textarea"
                       rows={3}
                       placeholder="Brief description for search engines..."
-                      value={formData.metaDescription}
+                      value={formData.metaDescription || ""}
                       onChange={(e) => handleChange("metaDescription", e.target.value)}
                       isInvalid={!!validationErrors.metaDescription}
                     />

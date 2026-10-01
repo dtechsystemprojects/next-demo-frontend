@@ -16,7 +16,11 @@ export async function POST(req: Request) {
     }
 
     // Locate the Next.js public/uploads directory
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    // In Hostinger's standalone mode, process.cwd() is often .next/standalone
+    const cwd = process.cwd();
+    const isStandalone = cwd.includes('.next') && cwd.includes('standalone');
+    const rootDir = isStandalone ? path.join(cwd, '../../') : cwd;
+    const uploadDir = path.join(rootDir, 'public', 'uploads');
     const imagePath = path.join(uploadDir, filename);
 
     if (fs.existsSync(imagePath)) {

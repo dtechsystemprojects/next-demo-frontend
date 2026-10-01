@@ -20,8 +20,12 @@ export async function POST(req: Request) {
     // Ensure filename is unique
     const uniqueFilename = `${Date.now()}-${filename.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     
-    // Create path to save in Next.js public/uploads directory
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    // Locate the Next.js public/uploads directory
+    // In Hostinger's standalone mode, process.cwd() is often .next/standalone
+    const cwd = process.cwd();
+    const isStandalone = cwd.includes('.next') && cwd.includes('standalone');
+    const rootDir = isStandalone ? path.join(cwd, '../../') : cwd;
+    const uploadDir = path.join(rootDir, 'public', 'uploads');
     
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });

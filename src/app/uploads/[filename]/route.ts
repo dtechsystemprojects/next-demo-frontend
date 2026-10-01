@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET(req: Request, { params }: { params: { filename: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ filename: string }> }) {
   try {
-    const filename = params.filename;
+    const resolvedParams = await params;
+    const filename = resolvedParams.filename;
     
     // Locate the Next.js public/uploads directory
     const cwd = process.cwd();
